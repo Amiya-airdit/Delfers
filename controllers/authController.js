@@ -28,7 +28,7 @@ exports.signup = async (req, res, next) => {
 
     await res
       .status(201)
-      .json({ newUser, msg: "Your new account has been created!" });
+      .json({ newUser, message: "Your new account has been created!" });
   } catch (err) {
     next(err);
   }
@@ -52,10 +52,10 @@ exports.login = async (req, res, next) => {
       throw error;
     }
 
-    const token = generateToken(user, process.env.LOGIN_SECRET, "12h");
+    const token = generateToken(user, process.env.LOGIN_SECRET, "30d");
     console.log(token);
 
-    res.status(200).json({ message: "Loggedin successfully", user });
+    await res.status(200).json({ message: "Loggedin successfully", user });
   } catch (err) {
     next(err);
   }
@@ -72,7 +72,7 @@ exports.updateUser = async (req, res, next) => {
       }
     );
 
-    res.status(200).json({ message: "User updated", user });
+    await res.status(200).json({ message: "User updated", user });
   } catch (err) {
     next(err);
   }
