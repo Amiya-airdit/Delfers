@@ -55,7 +55,12 @@ exports.login = async (req, res, next) => {
       throw error;
     }
 
-    const token = generateToken(user, process.env.USER_LOGIN_SECRET, "30d");
+    const token = generateToken(
+      user,
+      "user",
+      process.env.USER_LOGIN_SECRET,
+      "30d"
+    );
     console.log(token);
 
     await res.status(200).json({ message: "Loggedin successfully", user });
@@ -167,6 +172,7 @@ exports.loginAircraft = async (req, res, next) => {
 
     const token = generateToken(
       aircraft,
+      "aircraft",
       process.env.AIRCRAFT_LOGIN_SECRET,
       "30d"
     );
