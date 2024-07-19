@@ -28,6 +28,10 @@ const userSchema = new Schema(
       default: false,
       required: true,
     },
+    fresh: {
+      type: Boolean,
+      required: false,
+    },
   },
   { timestamps: true }
 );

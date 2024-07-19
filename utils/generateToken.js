@@ -8,6 +8,8 @@ const generateToken = (user, secret, expiresIn) => {
     userType: user.userType,
     password: user.password,
     companyName: user.companyName,
+    isDeleted: user.isDeleted,
+    fresh: user.fresh,
   };
 
   return jwt.sign(plainObj, secret, {

@@ -9,7 +9,7 @@ const isAuth = async (req, res, next) => {
       throw error;
     }
 
-    const decoded = verifyToken(token, process.env.LOGIN_SECRET);
+    const decoded = verifyToken(token, process.env.USER_LOGIN_SECRET);
     if (!decoded) {
       const error = new Error(
         "Failed to authenticate token, please login again"
