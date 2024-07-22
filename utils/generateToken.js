@@ -22,9 +22,7 @@ const generateToken = (object, type, secret, expiresIn) => {
       };
       break;
     default:
-      const error = new Error("Invalid type");
-      error.statusCode = 401;
-      throw error;
+      throw new Error("Unknown type to generate token!");
   }
 
   return jwt.sign(plainObj, secret, {

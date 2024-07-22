@@ -1,4 +1,5 @@
 const bcryptjs = require("bcryptjs");
+const { validationResult } = require("express-validator");
 
 const User = require("../models/user");
 const Aircraft = require("../models/aircraft");
@@ -7,11 +8,19 @@ const generateToken = require("../utils/generateToken");
 //user controllers
 exports.signup = async (req, res, next) => {
   try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const { name, email, userType, password, companyName } = req.body;
 
     const user = await User.findOne({ email });
     if (user) {
-      const error = new Error("Email already exist, please login");
+      const error = new Error("Already registered user, please login");
       error.statusCode = 403;
       throw error;
     }
@@ -39,6 +48,14 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
@@ -61,9 +78,10 @@ exports.login = async (req, res, next) => {
       process.env.USER_LOGIN_SECRET,
       "30d"
     );
-    console.log(token);
 
-    await res.status(200).json({ message: "Loggedin successfully", user });
+    await res
+      .status(200)
+      .json({ token, user, message: "Loggedin successfully" });
   } catch (err) {
     next(err);
   }
@@ -71,16 +89,17 @@ exports.login = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
-    const { _id, name, email, userType, companyName, isDeleted } = req.body;
+    const { _id } = req.user;
+    const { name, email, userType, isDeleted } = req.body;
     const user = await User.findOneAndUpdate(
       { _id },
-      { name, email, userType, companyName, isDeleted },
+      { name, email, userType, isDeleted },
       {
         new: true,
       }
     );
 
-    await res.status(200).json({ message: "User updated", user });
+    await res.status(200).json({ user, message: "User details updated successfully" });
   } catch (err) {
     next(err);
   }
@@ -88,16 +107,18 @@ exports.updateUser = async (req, res, next) => {
 
 exports.updateFreshUserPassword = async (req, res, next) => {
   try {
-    const { _id, fresh } = req.user;
-    const { newPassword, confirmNewPassword } = req.body;
-
-    if (newPassword !== confirmNewPassword) {
-      const error = new Error("New passwords must match");
-      error.statusCode = 401;
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
       throw error;
     }
 
-    if (fresh) {
+    const { _id, fresh } = req.user;
+    const { newPassword } = req.body;
+
+    if (!fresh) {
       const error = new Error("Your one time password change has been used");
       error.statusCode = 401;
       throw error;
@@ -126,6 +147,14 @@ exports.updateFreshUserPassword = async (req, res, next) => {
 //aircraft controllers
 exports.registerAircraft = async (req, res, next) => {
   try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const { number, pin } = req.body;
 
     const aircraft = await Aircraft.findOne({ number });
@@ -154,6 +183,14 @@ exports.registerAircraft = async (req, res, next) => {
 
 exports.loginAircraft = async (req, res, next) => {
   try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const { number, pin } = req.body;
 
     const aircraft = await Aircraft.findOne({ number });
@@ -176,9 +213,38 @@ exports.loginAircraft = async (req, res, next) => {
       process.env.AIRCRAFT_LOGIN_SECRET,
       "30d"
     );
-    console.log(token);
 
-    await res.status(200).json({ message: "Loggedin successfully", aircraft });
+    await res
+      .status(200)
+      .json({ token, aircraft, message: "Loggedin successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateAircraft = async (req, res, next) => {
+  try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const { _id } = req.user;
+    const { number } = req.body;
+    const aircraft = await Aircraft.findOneAndUpdate(
+      { _id },
+      { number },
+      {
+        new: true,
+      }
+    );
+
+    await res
+      .status(200)
+      .json({ aircraft, message: "Aircraft number updated successfully" });
   } catch (err) {
     next(err);
   }
