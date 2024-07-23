@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const aircraftSchema = new Schema(
+const airlineSchema = new Schema(
   {
-    number: {
+    name: {
       type: String,
       required: true,
     },
-    pin: {
+    code: {
       type: String,
       required: true,
     },
@@ -15,4 +15,4 @@ const aircraftSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Aircraft", aircraftSchema);
+module.exports = mongoose.model("Airline", airlineSchema);

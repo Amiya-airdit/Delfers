@@ -1,5 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
+const passport = require("passport");
 
 //file imports
 const {
@@ -38,6 +39,18 @@ router.post(
     body("password", "Password must not be empty").notEmpty(),
   ],
   login
+);
+
+// Microsoft OAuth routes
+router.get("/outlook", passport.authenticate("microsoft"));
+
+router.get(
+  "/outlook/callback",
+  passport.authenticate("microsoft", { failureRedirect: "/" }),
+  (req, res) => {
+    // Successful authentication, redirect to your desired page
+    res.redirect("/dashboard");
+  }
 );
 
 //aircraft auth routes
