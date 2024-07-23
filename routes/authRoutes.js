@@ -5,18 +5,14 @@ const { body } = require("express-validator");
 const {
   signup,
   login,
-  updateUser,
-  updateFreshUserPassword,
   registerAircraft,
   loginAircraft,
-  updateAircraft,
 } = require("../controllers/authController");
-const isAuth = require("../middlewares/authMiddleware");
 
 //create router
 const router = express.Router();
 
-//user routes
+//user auth routes
 router.post(
   "/signup",
   [
@@ -34,6 +30,7 @@ router.post(
   ],
   signup
 );
+
 router.post(
   "/login",
   [
@@ -42,23 +39,8 @@ router.post(
   ],
   login
 );
-router.put("/update-user", isAuth, updateUser);
-router.put(
-  "/update-freshPassword",
-  [
-    body("newPassword", "Password must not be empty").notEmpty(),
-    body("confirmNewPassword").custom((value, { req }) => {
-      if (value !== req.body.newPassword) {
-        throw new Error("New passwords must match.");
-      }
-      return true;
-    }),
-  ],
-  isAuth,
-  updateFreshUserPassword
-);
 
-//aircraft routes
+//aircraft auth routes
 router.post(
   "/register-aircraft",
   [
@@ -71,13 +53,16 @@ router.post(
         const validNumberRegex = /^\d+$/;
 
         if (!validNumberRegex.test(pin)) {
-          throw new Error(`${pin} is not a valid number`);
+          throw new Error(
+            `${pin} is not a valid pin, it must contain between 0-9 numbers`
+          );
         }
         return true;
       }),
   ],
   registerAircraft
 );
+
 router.post(
   "/login-aircraft",
   [
@@ -99,10 +84,5 @@ router.post(
   ],
   loginAircraft
 );
-router.put("/update-aircraft", [
-  body("number", "Aircraft number should not be empty").notEmpty(),
-  isAuth,
-  updateAircraft,
-]);
 
 module.exports = router;

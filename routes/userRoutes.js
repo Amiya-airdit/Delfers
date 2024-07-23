@@ -1,0 +1,29 @@
+const express = require("express");
+const { body } = require("express-validator");
+
+const {
+  updateUser,
+  updateFreshUserPassword,
+} = require("../controllers/userController");
+const isAuth = require("../middlewares/authMiddleware");
+
+const router = express.Router();
+
+//user routes
+router.put("/update", isAuth, updateUser);
+router.put(
+  "/update-freshPassword",
+  [
+    body("newPassword", "Password must not be empty").notEmpty(),
+    body("confirmNewPassword").custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("New passwords must match.");
+      }
+      return true;
+    }),
+  ],
+  isAuth,
+  updateFreshUserPassword
+);
+
+module.exports = router;

@@ -3,7 +3,9 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 
 //file imports
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const aircraftRoutes = require("./routes/aircraftRoutes");
 const connectToMongoDB = require("./db/connectToMongoDB");
 
 const app = express();
@@ -17,7 +19,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 //route middlewares
-app.use(authRoutes);
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/aircraft", aircraftRoutes);
 
 //global error handler
 app.use((err, req, res, next) => {
