@@ -6,43 +6,42 @@ const itemSchema = new Schema(
     name: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     scientificName: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     category: {
       type: String,
       required: true,
+      maxlength: 50,
     },
-    imageUrl: {
+    image_url: {
       type: String,
-      required: true,
+      maxLength: 255,
     },
     instructionsForUse: {
       type: String,
-      required: true,
+      maxLength: 255,
     },
     dosage: {
       type: String,
-      required: true,
+      maxlength: 50,
     },
     expirationDate: {
-      type: String,
+      type: Date,
       required: true,
     },
     manufacturer: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     isControlledsubstance: {
       type: Boolean,
       required: true,
-    },
-    country_id: {
-      type: mongoose.SchemaTypes.ObjectId,
-      required: true,
-      ref: "Country",
     },
   },
   { timestamps: true }

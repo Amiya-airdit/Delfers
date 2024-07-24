@@ -6,46 +6,55 @@ const medicalFacilitySchema = new Schema(
     name: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     type: {
       type: String,
       required: true,
+      maxlength: 50,
     },
     address: {
       type: String,
       required: true,
+      maxlength: 255,
     },
-    phoneNumber: {
+    phoneNumbers: {
       type: String,
       required: true,
+      maxlength: 50,
     },
-    imageUrl: {
+    image: {
       type: String,
-      required: true,
+      maxlength: 255,
     },
     distanceFromAirport: {
-      type: String,
+      type: Number,
       required: true,
     },
     operatingHours: {
       type: String,
       required: true,
+      maxlength: 100,
     },
-    languageSupported: {
+    languagesSupported: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     levelOfCare: {
       type: String,
       required: true,
+      maxlength: 50,
     },
     specialisations: {
       type: String,
       required: true,
+      maxlength: 255,
     },
     services: {
       type: String,
       required: true,
+      maxlength: 255,
     },
     isAirportEntity: {
       type: Boolean,
@@ -54,7 +63,7 @@ const medicalFacilitySchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ["active", "inActive"],
+      maxlength: 50,
     },
     associatedAirports: [
       {

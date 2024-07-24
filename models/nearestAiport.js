@@ -3,27 +3,26 @@ const Schema = mongoose.Schema;
 
 const nearestAirportSchema = new Schema(
   {
-    airport_id: {
+    airport: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "Airport",
     },
     distance: {
-      type: String,
+      type: Number,
       required: true,
     },
     estimatedArrivalTime: {
-      type: String,
+      type: Date,
       required: true,
     },
     suitableFacilities: [
       {
         type: mongoose.SchemaTypes.ObjectId,
-        required: true,
         ref: "MedicalFacility",
       },
     ],
-    diversionRequest_id: {
+    diversionRequest: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "DiversionRequest",

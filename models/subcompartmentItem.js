@@ -3,16 +3,16 @@ const Schema = mongoose.Schema;
 
 const subcompartmentItemSchema = new Schema(
   {
-    item_id: {
+    item: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "Item",
     },
     quantity: {
-      type: String,
+      type: Number,
       required: true,
     },
-    subcompartment_id: {
+    subcompartment: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "Subcompartment",

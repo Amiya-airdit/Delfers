@@ -6,18 +6,17 @@ const complaintTypeSchema = new Schema(
     category: {
       type: String,
       required: true,
+      maxlength: 50,
     },
-    related_kits: [
+    relatedKits: [
       {
         type: mongoose.SchemaTypes.ObjectId,
-        required: true,
         ref: "MedicalKit",
       },
     ],
-    related_items: [
+    relatedItems: [
       {
         type: mongoose.SchemaTypes.ObjectId,
-        required: true,
         ref: "Item",
       },
     ],

@@ -4,75 +4,73 @@ const Schema = mongoose.Schema;
 const diversionRequestSchema = new Schema(
   {
     timestamp: {
-      type: String,
+      type: Date,
       required: true,
     },
     flightNumber: {
       type: String,
       required: true,
+      maxLength: 10,
     },
     aircraftType: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     currentPositionLatitude: {
-      type: String,
+      type: Number,
       required: true,
     },
     currentPositionLongitude: {
-      type: String,
+      type: Number,
       required: true,
     },
     currentPositionAltitude: {
-      type: String,
+      type: Number,
       required: true,
     },
     currentPositionSpeed: {
-      type: String,
+      type: Number,
       required: true,
     },
     currentPositionHeading: {
-      type: String,
+      type: Number,
       required: true,
     },
     complaintType: {
       type: String,
       required: true,
+      maxlength: 50,
     },
     severity: {
       type: String,
       required: true,
-      enum: ["veryLow", "low", "moderate", "high", "veryHigh"],
+      maxlength: 50,
     },
     patientAge: {
-      type: String,
+      type: Number,
       required: true,
-    },
-    patientGender: {
-      type: String,
-      required: true,
-      enum: ["male", "female", "other"],
     },
     specialisedTreatmentNeeded: {
-      type: String,
+      type: Boolean,
       required: true,
-      enum: ["yes", "no"],
     },
     requiredLevelOfCare: {
       type: String,
       required: true,
-      enum: ["veryLow", "low", "moderate", "high", "veryHigh"],
+      maxlength: 50,
     },
     preferredLanguages: {
       type: String,
       required: true,
+      maxlength: 50,
     },
-    selectedAirport_id: {
+    selectedAirport: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "Airport",
     },
-    selectedFacility_id: {
+    selectedFacility: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "MedicalFacility",
@@ -80,9 +78,9 @@ const diversionRequestSchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ["active", "inActive"],
+      maxlength: 50,
     },
-    client_id: {
+    client: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
       ref: "Client",

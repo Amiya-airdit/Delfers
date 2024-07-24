@@ -3,37 +3,38 @@ const Schema = mongoose.Schema;
 
 const airportSchema = new Schema(
   {
-    iataCode: {
+    iata_code: {
       type: String,
       required: true,
+      maxlength: 10,
     },
     name: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     city: {
       type: String,
       required: true,
+      maxlength: 100,
     },
     country: {
       type: String,
       required: true,
-    },
-    coordinates: {
-      type: String,
-      required: true,
+      maxlength: 100,
     },
     latitude: {
-      type: String,
+      type: Number,
       required: true,
     },
     longitude: {
-      type: String,
+      type: Number,
       required: true,
     },
     groudOperactionContact: {
       type: String,
       required: true,
+      maxlength: 50,
     },
   },
   { timestamps: true }

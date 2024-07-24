@@ -4,17 +4,23 @@ const Schema = mongoose.Schema;
 const subcompartmentSchema = new Schema(
   {
     level: {
-      type: String,
+      type: Number,
       required: true,
     },
-    imageUrl: {
+    image_url: {
       type: String,
-      required: true,
+      maxLength: 255,
     },
-    medicalKit_id: {
+    items: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "SubcompartmentItem",
+      },
+    ],
+    medicalKit: {
       type: mongoose.SchemaTypes.ObjectId,
+      ref: "MedicalKit",
       required: true,
-      ref: "Medicalkit",
     },
   },
   { timestamps: true }
