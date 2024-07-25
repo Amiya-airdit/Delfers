@@ -26,8 +26,8 @@ app.use("/aircraft", aircraftRoutes);
 //global error handler
 app.use((err, req, res, next) => {
   console.log(err);
-  const statusCode = err.statusCode || 400;
-  const errorMessage = err.message || "Something went wrong";
+  const statusCode = err.statusCode || 500;
+  const errorMessage = err.message || "Internal server error";
   res.status(statusCode).json({ error: errorMessage });
 });
 

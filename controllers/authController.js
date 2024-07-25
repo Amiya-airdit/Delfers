@@ -21,7 +21,7 @@ exports.signup = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (user) {
       const error = new Error("Already registered user, please login");
-      error.statusCode = 403;
+      error.statusCode = 409;
       throw error;
     }
 
@@ -56,13 +56,17 @@ exports.login = async (req, res, next) => {
       throw error;
     }
 
-    const { email, password } = req.body;
+    const { email, password, isOutlook } = req.body;
     const user = await User.findOne({ email });
 
     if (!user) {
       const error = new Error("User not registered");
-      error.statusCode = 400;
+      error.statusCode = 401;
       throw error;
+    }
+
+    if (isOutlook) {
+      return res.status(200).json({ user, message: "Loggedin successfully" });
     }
 
     const check = await bcryptjs.compare(password, user.password);
@@ -103,7 +107,7 @@ exports.registerAircraft = async (req, res, next) => {
     const aircraft = await Aircraft.findOne({ number });
     if (aircraft) {
       const error = new Error("Aircraft already registered");
-      error.statusCode = 403;
+      error.statusCode = 409;
       throw error;
     }
 

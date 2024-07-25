@@ -35,7 +35,7 @@ router.post(
   "/login",
   [
     body("email", "Please enter valid email").isEmail(),
-    body("password", "Password must not be empty").notEmpty(),
+    body("isOutlook", "isOutlook must be a boolean value").isBoolean(),
   ],
   login
 );

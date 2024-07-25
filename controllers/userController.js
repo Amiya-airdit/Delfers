@@ -36,8 +36,8 @@ exports.updateFreshUserPassword = async (req, res, next) => {
     const { newPassword } = req.body;
 
     if (!fresh) {
-      const error = new Error("Your one time password change has been used");
-      error.statusCode = 401;
+      const error = new Error("One-time password has already been used");
+      error.statusCode = 400;
       throw error;
     }
 

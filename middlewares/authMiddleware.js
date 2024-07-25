@@ -7,8 +7,8 @@ const isAuth = async (req, res, next) => {
     const { loginType } = req.body;
 
     if (!token) {
-      const error = new Error("No token provided");
-      error.statusCode = 403;
+      const error = new Error("Authentication token not provided");
+      error.statusCode = 401;
       throw error;
     }
 
@@ -29,7 +29,7 @@ const isAuth = async (req, res, next) => {
     const decoded = verifyToken(token, secret);
     if (!decoded) {
       const error = new Error("Failed to authenticate, please login again");
-      error.statusCode = 500;
+      error.statusCode = 401;
       throw error;
     }
 
