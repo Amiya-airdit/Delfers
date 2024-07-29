@@ -9,7 +9,6 @@ const generateToken = (object, type, secret, expiresIn) => {
         name: object.name,
         email: object.email,
         userType: object.userType,
-        password: object.password,
         companyName: object.companyName,
         isDeleted: object.isDeleted,
         fresh: object.fresh,
@@ -18,6 +17,10 @@ const generateToken = (object, type, secret, expiresIn) => {
     case "aircraft":
       plainObj = {
         _id: object._id.toString(),
+        model: object.model,
+        manufacturer: object.manufacturer,
+        airline: object.airline,
+        modelMedicalKits: object.modelMedicalKits,
         number: object.number,
       };
       break;

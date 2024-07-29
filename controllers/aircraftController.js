@@ -1,21 +1,20 @@
 const Aircraft = require("../models/aircraft");
-const { validationResult } = require("express-validator");
 
 exports.updateAircraft = async (req, res, next) => {
   try {
-    //handle validation errors using express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const error = new Error(errors.array()[0].msg);
-      error.statusCode = 400;
+    const { _id } = req.user;
+
+    const check = await Aircraft.findById(_id);
+    if (!check) {
+      const error = new Error("Aircraft not registered");
+      error.statusCode = 401;
       throw error;
     }
 
-    const { _id } = req.user;
-    const { number } = req.body;
+    const { model, manufacturer, airline, modelMedicalKits, number } = req.body;
     const aircraft = await Aircraft.findOneAndUpdate(
       { _id },
-      { number },
+      { model, manufacturer, airline, modelMedicalKits, number },
       {
         new: true,
       }
@@ -23,7 +22,7 @@ exports.updateAircraft = async (req, res, next) => {
 
     await res
       .status(200)
-      .json({ aircraft, message: "Aircraft number updated successfully" });
+      .json({ aircraft, message: "Aircraft updated successfully" });
   } catch (err) {
     next(err);
   }

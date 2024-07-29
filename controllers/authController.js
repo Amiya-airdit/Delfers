@@ -102,7 +102,8 @@ exports.registerAircraft = async (req, res, next) => {
       throw error;
     }
 
-    const { number, pin } = req.body;
+    const { model, manufacturer, airline, modelMedicalKits, number, pin } =
+      req.body;
 
     const aircraft = await Aircraft.findOne({ number });
     if (aircraft) {
@@ -116,6 +117,10 @@ exports.registerAircraft = async (req, res, next) => {
     const hashedPin = await bcryptjs.hash(pin, salt);
 
     const newAircraft = await Aircraft.create({
+      model,
+      manufacturer,
+      airline,
+      modelMedicalKits,
       number,
       pin: hashedPin,
     });
