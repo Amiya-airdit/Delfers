@@ -21,7 +21,7 @@ const aircraftSchema = new Schema(
     modelMedicalKits: [
       {
         type: mongoose.SchemaTypes.ObjectId,
-        ref: "MedicalKit",
+        ref: "ModelMedicalKit",
       },
     ],
     number: {
