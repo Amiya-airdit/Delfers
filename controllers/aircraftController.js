@@ -3,15 +3,14 @@ const Aircraft = require("../models/aircraft");
 exports.updateAircraft = async (req, res, next) => {
   try {
     const { _id } = req.user;
+    const { model, manufacturer, airline, modelMedicalKits, number } = req.body;
 
-    const check = await Aircraft.findById(_id);
-    if (!check) {
-      const error = new Error("Aircraft not registered");
-      error.statusCode = 401;
+    if (!model && !manufacturer && !airline && !modelMedicalKits && !number) {
+      const error = new Error("No data provided to update");
+      error.statusCode = 400;
       throw error;
     }
 
-    const { model, manufacturer, airline, modelMedicalKits, number } = req.body;
     const aircraft = await Aircraft.findOneAndUpdate(
       { _id },
       { model, manufacturer, airline, modelMedicalKits, number },
@@ -19,6 +18,10 @@ exports.updateAircraft = async (req, res, next) => {
         new: true,
       }
     );
+
+    if (!aircraft) {
+      return res.status(404).json({ message: "Aircraft not found" });
+    }
 
     await res
       .status(200)

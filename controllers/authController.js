@@ -69,7 +69,8 @@ exports.login = async (req, res, next) => {
       return res.status(200).json({ user, message: "Loggedin successfully" });
     }
 
-    const check = await bcryptjs.compare(password, user.password);
+    let PASSWORD = password || "";
+    const check = await bcryptjs.compare(PASSWORD, user.password);
     if (!check) {
       const error = new Error("Incorrect password");
       error.statusCode = 401;

@@ -19,7 +19,7 @@ const emergencyRequestSchema = new Schema(
       maxlength: 50,
     },
     vitalsTemp: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     vitalsHeartRate: {

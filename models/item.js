@@ -20,14 +20,17 @@ const itemSchema = new Schema(
     },
     image_url: {
       type: String,
+      required: true,
       maxLength: 255,
     },
     instructionsForUse: {
       type: String,
+      required: true,
       maxLength: 255,
     },
     dosage: {
       type: String,
+      required: true,
       maxlength: 50,
     },
     expirationDate: {

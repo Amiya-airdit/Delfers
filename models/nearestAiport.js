@@ -9,7 +9,7 @@ const nearestAirportSchema = new Schema(
       ref: "Airport",
     },
     distance: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     estimatedArrivalTime: {

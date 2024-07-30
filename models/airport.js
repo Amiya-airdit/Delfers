@@ -24,11 +24,11 @@ const airportSchema = new Schema(
       maxlength: 100,
     },
     latitude: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     longitude: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     groudOperactionContact: {

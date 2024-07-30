@@ -28,8 +28,9 @@ const medicalFacilitySchema = new Schema(
       maxlength: 255,
     },
     distanceFromAirport: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
+      min: 0,
     },
     operatingHours: {
       type: String,

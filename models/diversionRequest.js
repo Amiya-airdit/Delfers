@@ -18,23 +18,23 @@ const diversionRequestSchema = new Schema(
       maxlength: 100,
     },
     currentPositionLatitude: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionLongitude: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionAltitude: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionSpeed: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionHeading: {
-      type: Number,
+      type: mongoose.SchemaTypes.Decimal128,
       required: true,
     },
     complaintType: {
