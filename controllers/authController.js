@@ -1,9 +1,20 @@
 const bcryptjs = require("bcryptjs");
 const { validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
 
 const User = require("../models/user");
 const Aircraft = require("../models/aircraft");
 const generateToken = require("../utils/generateToken");
+
+dotenv.config();
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASSWORD,
+  },
+});
 
 //user controllers
 exports.signup = async (req, res, next) => {
@@ -37,6 +48,23 @@ exports.signup = async (req, res, next) => {
       companyName,
       fresh: true,
     });
+
+    //send email and response
+    transporter.sendMail(
+      {
+        from: '"MDOB" <admin@mdob.com>',
+        to: newUser.email,
+        subject: "Greetings",
+        html: `<h4>HI ${newUser.name},</h4>
+              <p>Welcome to the MDOB.</p>`,
+      },
+      (err, res) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log("response ", res);
+      }
+    );
 
     await res
       .status(201)
