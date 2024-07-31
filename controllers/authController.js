@@ -40,14 +40,19 @@ exports.signup = async (req, res, next) => {
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    const newUser = await User.create({
+    const newUser = new User({
       name,
       email,
       userType,
       password: hashedPassword,
       companyName,
+      isDeleted: false,
       fresh: true,
     });
+
+    const newSecret = process.env.USER_LOGIN_SECRET + newUser.password;
+    console.log(newSecret);
+    const oneTimeToken = generateToken(newUser, "user", newSecret, "30d");
 
     //send email and response
     transporter.sendMail(
@@ -55,20 +60,25 @@ exports.signup = async (req, res, next) => {
         from: '"MDOB" <admin@mdob.com>',
         to: newUser.email,
         subject: "Greetings",
-        html: `<h4>HI ${newUser.name},</h4>
-              <p>Welcome to the MDOB.</p>`,
+        html: `<h4>Hi ${newUser.name},</h4>
+              <p>Welcome to the MDOB.</p>
+              <p>Click this <a href='http://localhost:8080/create-password/${oneTimeToken}/${newUser._id}'>link</a> to create your new password</a>
+              <p><b>Note : </b>This link is one time use only</p>`,
       },
-      (err, res) => {
+      async (err, info) => {
         if (err) {
-          console.log(err);
+          console.log("Error while sending email : ", err);
+          const error = new Error("Failed to create account");
+          error.statusCode = 500;
+          throw error;
         }
-        console.log("response ", res);
+        console.log("Email sent :  ", info.response);
+        await newUser.save();
+        await res
+          .status(201)
+          .json({ newUser, message: "Your new account has been created!" });
       }
     );
-
-    await res
-      .status(201)
-      .json({ newUser, message: "Your new account has been created!" });
   } catch (err) {
     next(err);
   }

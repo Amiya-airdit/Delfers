@@ -3,16 +3,16 @@ const { body } = require("express-validator");
 
 const {
   updateUser,
-  updateFreshUserPassword,
+  createFreshUserPassword,
 } = require("../controllers/userController");
 const isAuth = require("../middlewares/authMiddleware");
+const validateLink = require("../middlewares/validateLinkMiddleware");
 
 const router = express.Router();
 
 //user routes
-router.put("/update", isAuth, updateUser);
 router.put(
-  "/update-freshPassword",
+  "/create-freshPassword/:userId",
   [
     body("newPassword", "Password must not be empty").notEmpty(),
     body("confirmNewPassword").custom((value, { req }) => {
@@ -22,8 +22,10 @@ router.put(
       return true;
     }),
   ],
-  isAuth,
-  updateFreshUserPassword
+  validateLink,
+  createFreshUserPassword
 );
+
+router.put("/update", isAuth, updateUser);
 
 module.exports = router;
