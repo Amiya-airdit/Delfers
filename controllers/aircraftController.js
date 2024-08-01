@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const Aircraft = require("../models/aircraft");
 
 exports.updateAircraft = async (req, res, next) => {
@@ -11,13 +13,23 @@ exports.updateAircraft = async (req, res, next) => {
       throw error;
     }
 
-    const aircraft = await Aircraft.findOneAndUpdate(
-      { _id },
-      { model, manufacturer, airline, modelMedicalKits, number },
-      {
-        new: true,
-      }
-    );
+    const updateData = {};
+    if (model) updateData.model = model;
+    if (manufacturer) updateData.manufacturer = manufacturer;
+    if (airline) updateData.airline = airline;
+    if (number) updateData.number = number;
+
+    if (modelMedicalKits) {
+      updateData.$addToSet = {
+        modelMedicalKits: {
+          $each: modelMedicalKits.map((id) => new mongoose.Types.ObjectId(id)),
+        },
+      };
+    }
+
+    const aircraft = await Aircraft.findOneAndUpdate({ _id }, updateData, {
+      new: true,
+    });
 
     if (!aircraft) {
       return res.status(404).json({ message: "Aircraft not found" });
