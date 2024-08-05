@@ -28,8 +28,9 @@ exports.signup = async (req, res, next) => {
     }
 
     const { name, email, userType, password, companyName } = req.body;
+    const EMAIL = email.toLowerCase();
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: EMAIL });
     if (user) {
       const error = new Error("Already registered user, please login");
       error.statusCode = 409;
@@ -42,7 +43,7 @@ exports.signup = async (req, res, next) => {
 
     const newUser = new User({
       name,
-      email,
+      email: EMAIL,
       userType,
       password: hashedPassword,
       companyName,
@@ -51,34 +52,30 @@ exports.signup = async (req, res, next) => {
     });
 
     const newSecret = process.env.USER_LOGIN_SECRET + newUser.password;
-    console.log(newSecret);
     const oneTimeToken = generateToken(newUser, "user", newSecret, "30d");
 
     //send email and response
-    transporter.sendMail(
-      {
-        from: '"MDOB" <admin@mdob.com>',
-        to: newUser.email,
-        subject: "Greetings",
-        html: `<h4>Hi ${newUser.name},</h4>
+    const result = await transporter.sendMail({
+      from: '"MDOB" <admin@mdob.com>',
+      to: newUser.email,
+      subject: "Greetings",
+      html: `<h4>Hi ${newUser.name},</h4>
               <p>Welcome to the MDOB.</p>
-              <p>Click this <a href='http://localhost:8080/create-password/${oneTimeToken}/${newUser._id}'>link</a> to create your new password</a>
+              <p>Click this <a href='${process.env.CLIENT_URL}/create-password/${newUser._id}/${oneTimeToken}'>link</a> to create your new password</a>
               <p><b>Note : </b>This link is one time use only</p>`,
-      },
-      async (err, info) => {
-        if (err) {
-          console.log("Error while sending email : ", err);
-          const error = new Error("Failed to create account");
-          error.statusCode = 500;
-          throw error;
-        }
-        console.log("Email sent :  ", info.response);
-        await newUser.save();
-        await res
-          .status(201)
-          .json({ newUser, message: "Your new account has been created!" });
-      }
-    );
+    });
+
+    if (result.rejected.length > 0) {
+      const error = new Error("Failed to create account");
+      error.statusCode = 500;
+      throw error;
+    }
+
+    await newUser.save();
+
+    await res
+      .status(201)
+      .json({ newUser, message: "Your new account has been created" });
   } catch (err) {
     next(err);
   }
@@ -95,7 +92,9 @@ exports.login = async (req, res, next) => {
     }
 
     const { email, password, isOutlook } = req.body;
-    const user = await User.findOne({ email });
+    const EMAIL = email.toLowerCase();
+
+    const user = await User.findOne({ email: EMAIL });
 
     if (!user) {
       const error = new Error("User not registered");
@@ -129,6 +128,66 @@ exports.login = async (req, res, next) => {
     next(err);
   }
 };
+
+// exports.forgotPassword = async (req, res, next) => {
+//   try {
+//     //handle validation errors using express-validator
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       const error = new Error(errors.array()[0].msg);
+//       error.statusCode = 400;
+//       throw error;
+//     }
+
+//     const { email } = req.body;
+
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       const error = new Error("User not registered");
+//       error.statusCode = 401;
+//       throw error;
+//     }
+
+//     if (user.fresh) {
+//       const error = new Error(
+//         "First generate password using one-time link, which have sent to your email"
+//       );
+//       error.statusCode = 403;
+//       throw error;
+//     }
+
+//     //create one time link and valid for 15mins
+//     const token = generateToken(
+//       user,
+//       "user",
+//       `${USER_FORGOTPASSWORD_SECRET}+${user.password}`,
+//       "5m"
+//     );
+//     const link = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
+
+//     //send link to email
+//     const result = await transporter.sendMail({
+//       from: '" Admin" <admin001@MDOB.com>',
+//       to: user.email,
+//       subject: "Password reset link",
+//       html: `<h4>Hi ${user.name},</h4>
+//                   <p>Click this <a href=${link}>link</a> to reset your password.</p>
+//                   <p>Note: The link will expire in 5 minutes and one time use only.</p>`,
+//     });
+
+//     if (result.accepted.length === 0) {
+//       const error = new Error("Failed to send email, please try again");
+//       error.statusCode = 401;
+//       throw error;
+//     }
+
+//     await res
+//       .status(200)
+//       .json({ token, link, message: "EMAIL sent successfully" });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 //aircraft controllers
 exports.registerAircraft = async (req, res, next) => {

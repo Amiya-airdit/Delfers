@@ -2,6 +2,28 @@ const mongoose = require("mongoose");
 
 const Aircraft = require("../models/aircraft");
 
+exports.getAllAircrafts = async (req, res, next) => {
+  try {
+    const filter = req.query.$filter;
+    if (!filter) {
+      const error = new Error("No filter provided to get aircrafts");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const [field, operator, value] = filter.split("-");
+    if (field === "airline" && operator === "eq") {
+      const airlineId = value;
+      const aircrafts = await Aircraft.find({ airline: airlineId });
+      return res
+        .status(200)
+        .json({ aircrafts, message: "Fetched aircrafts successfully" });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.updateAircraft = async (req, res, next) => {
   try {
     const { _id } = req.user;

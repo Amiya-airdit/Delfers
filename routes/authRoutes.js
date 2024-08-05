@@ -41,6 +41,11 @@ router.post(
   login
 );
 
+// router.post("/forgot-password", [
+//   body("email", "Please enter valid email").isEmail(),
+//   forgotPassword,
+// ]);
+
 //aircraft auth routes
 router.post(
   "/register-aircraft",

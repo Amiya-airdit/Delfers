@@ -13,6 +13,7 @@ const router = express.Router();
 //user routes
 router.put(
   "/create-freshPassword/:userId",
+  validateLink,
   [
     body("newPassword", "Password must not be empty").notEmpty(),
     body("confirmNewPassword").custom((value, { req }) => {
@@ -22,7 +23,6 @@ router.put(
       return true;
     }),
   ],
-  validateLink,
   createFreshUserPassword
 );
 
