@@ -64,12 +64,11 @@ exports.updateUser = async (req, res, next) => {
 
     const updateData = {};
 
-    if (name !== undefined && name.trim() !== "") updateData.name = name.trim();
-    if (email !== undefined && email.trim() !== "")
-      updateData.email = email.trim();
-    if (userType !== undefined && userType.trim() !== "")
+    if (name && name.trim() !== "") updateData.name = name.trim();
+    if (email && email.trim() !== "") updateData.email = email.trim();
+    if (userType && userType.trim() !== "")
       updateData.userType = userType.trim();
-    if (isDeleted !== undefined) updateData.isDeleted = isDeleted;
+    if (isDeleted) updateData.isDeleted = isDeleted;
 
     const user = await User.findOneAndUpdate({ _id }, updateData, {
       new: true,

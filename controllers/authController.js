@@ -28,7 +28,6 @@ exports.signup = async (req, res, next) => {
     }
 
     const { name, email, userType, password, companyName } = req.body;
-
     const trimmedData = {
       name: name.trim(),
       email: email.toLowerCase(),
@@ -263,8 +262,16 @@ exports.registerAircraft = async (req, res, next) => {
 
     const { model, manufacturer, airline, modelMedicalKits, number, pin } =
       req.body;
+    const trimmedData = {
+      model: model.trim(),
+      manufacturer: manufacturer.trim(),
+      airline: airline.trim(),
+      modelMedicalKits,
+      number: number.trim(),
+      pin: pin.trim(),
+    };
 
-    const aircraft = await Aircraft.findOne({ number });
+    const aircraft = await Aircraft.findOne({ number: trimmedData.number });
     if (aircraft) {
       const error = new Error("Aircraft already registered");
       error.statusCode = 409;
@@ -273,14 +280,14 @@ exports.registerAircraft = async (req, res, next) => {
 
     //hash pin
     const salt = await bcryptjs.genSalt(10);
-    const hashedPin = await bcryptjs.hash(pin, salt);
+    const hashedPin = await bcryptjs.hash(trimmedData.pin, salt);
 
     const newAircraft = await Aircraft.create({
-      model,
-      manufacturer,
-      airline,
-      modelMedicalKits,
-      number,
+      model: trimmedData.model,
+      manufacturer: trimmedData.manufacturer,
+      airline: trimmedData.airline,
+      modelMedicalKits: trimmedData.modelMedicalKits,
+      number: trimmedData.number,
       pin: hashedPin,
     });
 

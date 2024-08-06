@@ -76,12 +76,17 @@ router.post(
     body(
       "model",
       "Aicraft model must be in between min:1 and max:100 characters in length"
-    ).isLength({ min: 1, max: 100 }),
+    )
+      .trim()
+      .isLength({ min: 1, max: 100 }),
     body(
       "manufacturer",
       "Manufacturer must be in between min:1 and max:100 characters in length."
-    ).isLength({ min: 1, max: 100 }),
+    )
+      .trim()
+      .isLength({ min: 1, max: 100 }),
     body("airline")
+      .trim()
       .isMongoId()
       .withMessage("Airline must be a valid ObjectId."),
     body("modelMedicalKits")
@@ -92,8 +97,9 @@ router.post(
         array.every((item) => mongoose.Types.ObjectId.isValid(item))
       )
       .withMessage("Every item in ModelMedicalKits must be a valid ObjectId."),
-    body("number", "Aircraft number is required").notEmpty(),
+    body("number", "Aircraft number is required").trim().notEmpty(),
     body("pin", "Pin length must be six numbers in length")
+      .trim()
       .isLength({
         min: 6,
         max: 6,

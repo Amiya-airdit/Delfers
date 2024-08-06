@@ -36,10 +36,11 @@ exports.updateAircraft = async (req, res, next) => {
     }
 
     const updateData = {};
-    if (model) updateData.model = model;
-    if (manufacturer) updateData.manufacturer = manufacturer;
-    if (airline) updateData.airline = airline;
-    if (number) updateData.number = number;
+    if (model && model.trim() !== "") updateData.model = model.trim();
+    if (manufacturer && manufacturer.trim() === "")
+      updateData.manufacturer = manufacturer.trim();
+    if (airline && airline.trim() !== "") updateData.airline = airline.trim();
+    if (number && number.trim() !== "") updateData.number = number.trim();
 
     if (modelMedicalKits) {
       updateData.$addToSet = {
