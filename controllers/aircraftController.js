@@ -35,6 +35,26 @@ exports.updateAircraft = async (req, res, next) => {
       throw error;
     }
 
+    //validate modelMedicalKits if they provided
+    if (modelMedicalKits && !Array.isArray(modelMedicalKits)) {
+      const error = new Error("modelMedicalKits must be an array");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (modelMedicalKits) {
+      const invalidIds = modelMedicalKits.filter(
+        (id) => !mongoose.Types.ObjectId.isValid(id)
+      );
+      if (invalidIds.length > 0) {
+        const error = new Error(
+          "modelMedicalKits array must contain valid objectId's"
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+    }
+
     const updateData = {};
     if (model && model.trim() !== "") updateData.model = model.trim();
     if (manufacturer && manufacturer.trim() === "")
