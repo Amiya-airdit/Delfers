@@ -171,7 +171,6 @@ exports.forgotPassword = async (req, res, next) => {
 
     //create one time link and valid for 5mins
     const secret = process.env.USER_FORGOTPASSWORD_SECRET + user.password;
-    console.log(secret);
     const token = generateToken(user, "user", secret, "5m");
     const link = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
 
