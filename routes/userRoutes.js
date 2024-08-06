@@ -15,13 +15,15 @@ router.put(
   "/create-freshPassword/:userId",
   validateLink,
   [
-    body("newPassword", "Password must not be empty").notEmpty(),
-    body("confirmNewPassword").custom((value, { req }) => {
-      if (value !== req.body.newPassword) {
-        throw new Error("New passwords must match.");
-      }
-      return true;
-    }),
+    body("newPassword", "Password must not be empty").trim().notEmpty(),
+    body("confirmNewPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.newPassword) {
+          throw new Error("New passwords must match.");
+        }
+        return true;
+      }),
   ],
   createFreshUserPassword
 );

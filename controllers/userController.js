@@ -17,14 +17,14 @@ exports.createFreshUserPassword = async (req, res, next) => {
     const { newPassword } = req.body;
 
     if (!fresh) {
-      const error = new Error("One-time password has already been used");
+      const error = new Error("One-time password setup has already been used");
       error.statusCode = 400;
       throw error;
     }
 
     //hash password
     const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    const hashedPassword = await bcryptjs.hash(newPassword.trim(), salt);
 
     const user = await User.findOneAndUpdate(
       { _id },
@@ -54,11 +54,21 @@ exports.updateUser = async (req, res, next) => {
       throw error;
     }
 
+    if (email !== undefined) {
+      if (!email.includes("@") || !email.includes(".com")) {
+        const error = new Error("Please enter a valid email");
+        error.statusCode = 400;
+        throw error;
+      }
+    }
+
     const updateData = {};
 
-    if (name !== undefined) updateData.name = name;
-    if (email !== undefined) updateData.email = email;
-    if (userType !== undefined) updateData.userType = userType;
+    if (name !== undefined && name.trim() !== "") updateData.name = name.trim();
+    if (email !== undefined && email.trim() !== "")
+      updateData.email = email.trim();
+    if (userType !== undefined && userType.trim() !== "")
+      updateData.userType = userType.trim();
     if (isDeleted !== undefined) updateData.isDeleted = isDeleted;
 
     const user = await User.findOneAndUpdate({ _id }, updateData, {

@@ -28,9 +28,16 @@ exports.signup = async (req, res, next) => {
     }
 
     const { name, email, userType, password, companyName } = req.body;
-    const EMAIL = email.toLowerCase();
 
-    const user = await User.findOne({ email: EMAIL });
+    const trimmedData = {
+      name: name.trim(),
+      email: email.toLowerCase(),
+      userType: userType.trim(),
+      password: password.trim(),
+      companyName: companyName.trim(),
+    };
+
+    const user = await User.findOne({ email: trimmedData.email });
     if (user) {
       const error = new Error("Already registered user, please login");
       error.statusCode = 409;
@@ -39,14 +46,14 @@ exports.signup = async (req, res, next) => {
 
     //hash password
     const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(password, salt);
+    const hashedPassword = await bcryptjs.hash(trimmedData.password, salt);
 
     const newUser = new User({
-      name,
-      email: EMAIL,
-      userType,
+      name: trimmedData.name,
+      email: trimmedData.email,
+      userType: trimmedData.userType,
       password: hashedPassword,
-      companyName,
+      companyName: trimmedData.companyName,
       isDeleted: false,
       fresh: true,
     });
@@ -92,9 +99,13 @@ exports.login = async (req, res, next) => {
     }
 
     const { email, password, isOutlook } = req.body;
-    const EMAIL = email.toLowerCase();
+    const trimmedData = {
+      email: email.toLowerCase(),
+      password: password.trim(),
+      isOutlook,
+    };
 
-    const user = await User.findOne({ email: EMAIL });
+    const user = await User.findOne({ email: trimmedData.email });
 
     if (!user) {
       const error = new Error("User not registered");
@@ -106,7 +117,7 @@ exports.login = async (req, res, next) => {
       return res.status(200).json({ user, message: "Loggedin successfully" });
     }
 
-    let PASSWORD = password || "";
+    const PASSWORD = trimmedData.password || "";
     const check = await bcryptjs.compare(PASSWORD, user.password);
     if (!check) {
       const error = new Error("Incorrect password");
@@ -129,65 +140,115 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// exports.forgotPassword = async (req, res, next) => {
-//   try {
-//     //handle validation errors using express-validator
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       const error = new Error(errors.array()[0].msg);
-//       error.statusCode = 400;
-//       throw error;
-//     }
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
 
-//     const { email } = req.body;
+    const { email } = req.body;
+    const trimmedData = {
+      email: email.toLowerCase(),
+    };
 
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       const error = new Error("User not registered");
-//       error.statusCode = 401;
-//       throw error;
-//     }
+    const user = await User.findOne({ email: trimmedData.email });
+    if (!user) {
+      const error = new Error("User not registered");
+      error.statusCode = 401;
+      throw error;
+    }
 
-//     if (user.fresh) {
-//       const error = new Error(
-//         "First generate password using one-time link, which have sent to your email"
-//       );
-//       error.statusCode = 403;
-//       throw error;
-//     }
+    if (user.fresh) {
+      const error = new Error(
+        "First generate password using one-time link, which have sent to your email"
+      );
+      error.statusCode = 403;
+      throw error;
+    }
 
-//     //create one time link and valid for 15mins
-//     const token = generateToken(
-//       user,
-//       "user",
-//       `${USER_FORGOTPASSWORD_SECRET}+${user.password}`,
-//       "5m"
-//     );
-//     const link = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
+    //create one time link and valid for 5mins
+    const secret = process.env.USER_FORGOTPASSWORD_SECRET + user.password;
+    console.log(secret);
+    const token = generateToken(user, "user", secret, "5m");
+    const link = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
 
-//     //send link to email
-//     const result = await transporter.sendMail({
-//       from: '" Admin" <admin001@MDOB.com>',
-//       to: user.email,
-//       subject: "Password reset link",
-//       html: `<h4>Hi ${user.name},</h4>
-//                   <p>Click this <a href=${link}>link</a> to reset your password.</p>
-//                   <p>Note: The link will expire in 5 minutes and one time use only.</p>`,
-//     });
+    //send link to email
+    const result = await transporter.sendMail({
+      from: '"MDOB" <admin@mdob.com>',
+      to: user.email,
+      subject: "Password reset link",
+      html: `<h4>Hi ${user.name},</h4>
+                  <p>Click this <a href=${link}>link</a> to reset your password.</p>
+                  <p>Note: The link will expire in 5 minutes and one time use only.</p>`,
+    });
 
-//     if (result.accepted.length === 0) {
-//       const error = new Error("Failed to send email, please try again");
-//       error.statusCode = 401;
-//       throw error;
-//     }
+    if (result.accepted.length === 0) {
+      const error = new Error("Failed to send email, please try again");
+      error.statusCode = 401;
+      throw error;
+    }
 
-//     await res
-//       .status(200)
-//       .json({ token, link, message: "EMAIL sent successfully" });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+    await res.status(200).json({
+      token,
+      link,
+      message: "Password reset link sent to Email sent successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    //validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const { _id: userId } = req.user;
+    const { newPassword } = req.body;
+    const trimmedData = {
+      newPassword: newPassword.trim(),
+    };
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(trimmedData.newPassword, salt);
+
+    const user = await User.findById(userId);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    //send email and response
+    transporter.sendMail(
+      {
+        from: '"MDOB" <admin@mdob.com>',
+        to: user.email,
+        subject: "Password changed",
+        html: `<h4>Hi ${user.name},</h4>
+                  <p>Your password has been reset successfully.</p>`,
+      },
+      (error, response) => {
+        if (error) {
+          console.log(error.message);
+        }
+      }
+    );
+
+    await res
+      .status(201)
+      .json({ user, message: "The password has been reset successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
 
 //aircraft controllers
 exports.registerAircraft = async (req, res, next) => {
@@ -242,15 +303,19 @@ exports.loginAircraft = async (req, res, next) => {
     }
 
     const { number, pin } = req.body;
+    const trimmedData = {
+      number: number.trim(),
+      pin: pin.trim(),
+    };
 
-    const aircraft = await Aircraft.findOne({ number });
+    const aircraft = await Aircraft.findOne({ number: trimmedData.number });
     if (!aircraft) {
       const error = new Error("Aircraft not registered");
       error.statusCode = 401;
       throw error;
     }
 
-    const check = await bcryptjs.compare(pin, aircraft.pin);
+    const check = await bcryptjs.compare(trimmedData.pin, aircraft.pin);
     if (!check) {
       const error = new Error("Incorrect password");
       error.statusCode = 401;

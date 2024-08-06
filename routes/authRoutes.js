@@ -6,9 +6,12 @@ const { body } = require("express-validator");
 const {
   signup,
   login,
+  forgotPassword,
+  resetPassword,
   registerAircraft,
   loginAircraft,
 } = require("../controllers/authController");
+const checkLink = require("../middlewares/checkLink");
 
 //create router
 const router = express.Router();
@@ -17,17 +20,19 @@ const router = express.Router();
 router.post(
   "/signup",
   [
-    body("name", "Name must not be empty").notEmpty(),
+    body("name", "Name must not be empty").trim().notEmpty(),
     body("email", "Please enter valid email").isEmail(),
-    body("userType", "User type must not be empty").notEmpty(),
-    body("password", "Password must not be empty").notEmpty(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords must match.");
-      }
-      return true;
-    }),
-    body("companyName", "Company name must not be empty").notEmpty(),
+    body("userType", "User type must not be empty").trim().notEmpty(),
+    body("password", "Password must not be empty").trim().notEmpty(),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords must match.");
+        }
+        return true;
+      }),
+    body("companyName", "Company name must not be empty").trim().notEmpty(),
   ],
   signup
 );
@@ -41,10 +46,28 @@ router.post(
   login
 );
 
-// router.post("/forgot-password", [
-//   body("email", "Please enter valid email").isEmail(),
-//   forgotPassword,
-// ]);
+router.post(
+  "/forgot-password",
+  [body("email", "Please enter valid email").isEmail()],
+  forgotPassword
+);
+
+router.post(
+  "/reset-password/:userId",
+  checkLink,
+  [
+    body("newPassword", "New password must not be empty").trim().notEmpty(),
+    body("confirmNewPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.newPassword) {
+          throw new Error("New passwords must match.");
+        }
+        return true;
+      }),
+  ],
+  resetPassword
+);
 
 //aircraft auth routes
 router.post(
@@ -90,8 +113,9 @@ router.post(
   "/login-aircraft",
   [
     [
-      body("number", "Aircraft number should not be empty").notEmpty(),
+      body("number", "Aircraft number should not be empty").trim().notEmpty(),
       body("pin", "Pin length must be exactly six digits")
+        .trim()
         .isLength({ min: 6, max: 6 })
         .custom((pin) => {
           const validNumberRegex = /^\d+$/;
