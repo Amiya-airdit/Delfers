@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//model medicalkit schema
 const modelMedicalKitSchema = new Schema(
   {
     aircraftModel: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: "Aircraft",
       required: true,
     },
     medicalKit: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: "MedicalKit",
       required: true,
     },
@@ -17,4 +17,5 @@ const modelMedicalKitSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("ModelMedicalKit", modelMedicalKitSchema);
+const ModelMedicalKit = model("ModelMedicalKit", modelMedicalKitSchema);
+export default ModelMedicalKit;

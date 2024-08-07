@@ -1,8 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const Aircraft = require("../models/aircraft");
+//file imports
+import Aircraft from "../models/aircraft.js";
 
-exports.getAllAircrafts = async (req, res, next) => {
+//aircraft controllers
+export const getAllAircrafts = async (req, res, next) => {
   try {
     const filter = req.query.$filter;
     if (!filter) {
@@ -24,7 +26,7 @@ exports.getAllAircrafts = async (req, res, next) => {
   }
 };
 
-exports.updateAircraft = async (req, res, next) => {
+export const updateAircraft = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { model, manufacturer, airline, modelMedicalKits, number } = req.body;

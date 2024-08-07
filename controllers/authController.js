@@ -1,11 +1,12 @@
-const bcryptjs = require("bcryptjs");
-const { validationResult } = require("express-validator");
-const nodemailer = require("nodemailer");
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+import { validationResult } from "express-validator";
+import bcryptjs from "bcryptjs";
 
-const User = require("../models/user");
-const Aircraft = require("../models/aircraft");
-const generateToken = require("../utils/generateToken");
+//file imports
+import User from "../models/user.js";
+import Aircraft from "../models/aircraft.js";
+import generateToken from "../utils/generateToken.js";
 
 dotenv.config();
 const transporter = nodemailer.createTransport({
@@ -16,8 +17,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-//user controllers
-exports.signup = async (req, res, next) => {
+//user auth controllers
+export const signup = async (req, res, next) => {
   try {
     //handle validation errors using express-validator
     const errors = validationResult(req);
@@ -87,7 +88,7 @@ exports.signup = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     //handle validation errors using express-validator
     const errors = validationResult(req);
@@ -139,7 +140,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.forgotPassword = async (req, res, next) => {
+export const forgotPassword = async (req, res, next) => {
   try {
     //handle validation errors using express-validator
     const errors = validationResult(req);
@@ -200,7 +201,7 @@ exports.forgotPassword = async (req, res, next) => {
   }
 };
 
-exports.resetPassword = async (req, res, next) => {
+export const resetPassword = async (req, res, next) => {
   try {
     //validation errors using express-validator
     const errors = validationResult(req);
@@ -248,8 +249,8 @@ exports.resetPassword = async (req, res, next) => {
   }
 };
 
-//aircraft controllers
-exports.registerAircraft = async (req, res, next) => {
+//aircraft auth controllers
+export const registerAircraft = async (req, res, next) => {
   try {
     //handle validation errors using express-validator
     const errors = validationResult(req);
@@ -298,7 +299,7 @@ exports.registerAircraft = async (req, res, next) => {
   }
 };
 
-exports.loginAircraft = async (req, res, next) => {
+export const loginAircraft = async (req, res, next) => {
   try {
     //handle validation errors using express-validator
     const errors = validationResult(req);

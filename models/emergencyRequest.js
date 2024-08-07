@@ -1,9 +1,17 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//emergency request schema
 const emergencyRequestSchema = new Schema(
   {
-    seatNo: {
+    date: {
+      type: Date,
+      required: true,
+    },
+    time: {
+      type: Date,
+      required: true,
+    },
+    seatNumber: {
       type: String,
       required: true,
       maxlength: 10,
@@ -18,18 +26,43 @@ const emergencyRequestSchema = new Schema(
       required: true,
       maxlength: 50,
     },
+    age: {
+      type: Number,
+      required: false,
+    },
+    gender: {
+      type: String,
+      required: false,
+      enum: ["Male", "Female", "Others"],
+    },
     vitalsTemp: {
-      type: mongoose.SchemaTypes.Decimal128,
-      required: true,
+      type: SchemaTypes.Decimal128,
+      required: false,
     },
     vitalsHeartRate: {
       type: Number,
-      required: true,
+      required: false,
     },
     vitalsBP: {
       type: String,
-      required: true,
+      required: false,
       maxlength: 10,
+    },
+    scenarioImageURLs: [
+      {
+        type: String,
+        maxlength: 255,
+      },
+    ],
+    medicalHistory: {
+      type: String,
+      required: false,
+      maxlength: 255,
+    },
+    allergies: {
+      type: String,
+      required: false,
+      maxlength: 255,
     },
     departureAirport: {
       type: String,
@@ -44,14 +77,6 @@ const emergencyRequestSchema = new Schema(
       required: true,
     },
     timeOfArrival: {
-      type: Date,
-      required: true,
-    },
-    date: {
-      type: Date,
-      required: true,
-    },
-    time: {
       type: Date,
       required: true,
     },
@@ -72,20 +97,9 @@ const emergencyRequestSchema = new Schema(
       type: Date,
       required: true,
     },
-    scenarioImageURL: {
-      type: String,
-      maxlength: 255,
-    },
-    medicalHistory: {
-      type: String,
-      maxlength: 255,
-    },
-    allergies: {
-      type: String,
-      maxlength: 255,
-    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("EmergencyRequest", emergencyRequestSchema);
+const EmergencyRequest = model("EmergencyRequest", emergencyRequestSchema);
+export default EmergencyRequest;

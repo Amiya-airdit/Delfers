@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//medical facility schema
 const medicalFacilitySchema = new Schema(
   {
     name: {
@@ -28,7 +28,7 @@ const medicalFacilitySchema = new Schema(
       maxlength: 255,
     },
     distanceFromAirport: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
       min: 0,
     },
@@ -68,7 +68,7 @@ const medicalFacilitySchema = new Schema(
     },
     associatedAirports: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Airport",
       },
     ],
@@ -76,4 +76,5 @@ const medicalFacilitySchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("MedicalFacility", medicalFacilitySchema);
+const MedicalFacility = model("MedicalFacility", medicalFacilitySchema);
+export default MedicalFacility;

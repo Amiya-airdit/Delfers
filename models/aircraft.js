@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//aircraft schema
 const aircraftSchema = new Schema(
   {
     model: {
@@ -14,13 +14,13 @@ const aircraftSchema = new Schema(
       maxlength: 100,
     },
     airline: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: "Airline",
       required: true,
     },
     modelMedicalKits: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "ModelMedicalKit",
       },
     ],
@@ -38,4 +38,5 @@ const aircraftSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("Aircraft", aircraftSchema);
+const Aircraft = model("Aircraft", aircraftSchema);
+export default Aircraft;

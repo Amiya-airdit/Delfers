@@ -1,6 +1,8 @@
-const verifyToken = require("../utils/verifyToken");
-const loginTypes = require("../utils/loginTypes");
+//file imports
+import verifyToken from "../utils/verifyToken.js";
+import { loginTypes } from "../utils/loginTypes.js";
 
+//This middleware to check whether user is loggedin or not
 const isAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
@@ -28,7 +30,7 @@ const isAuth = async (req, res, next) => {
 
     const decoded = verifyToken(token, secret);
     if (!decoded) {
-      const error = new Error("Failed to authenticate, please login again");
+      const error = new Error("Your session expired, please login again");
       error.statusCode = 401;
       throw error;
     }
@@ -40,4 +42,4 @@ const isAuth = async (req, res, next) => {
   }
 };
 
-module.exports = isAuth;
+export default isAuth;

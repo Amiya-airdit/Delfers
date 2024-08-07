@@ -1,3 +1,1 @@
-const loginTypes = ["user-login", "aircraft-login"];
-
-module.exports = loginTypes;
+export const loginTypes = ["user-login", "aircraft-login"];

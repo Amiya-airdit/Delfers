@@ -1,6 +1,8 @@
-const User = require("../models/user");
-const verifyToken = require("../utils/verifyToken");
+//file imports
+import User from "../models/user.js";
+import verifyToken from "../utils/verifyToken.js";
 
+//This middleware is for reset-password
 const checkLink = async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -32,4 +34,4 @@ const checkLink = async (req, res, next) => {
   }
 };
 
-module.exports = checkLink;
+export default checkLink;

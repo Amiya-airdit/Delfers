@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//complaint type schema
 const complaintTypeSchema = new Schema(
   {
     category: {
@@ -10,13 +10,13 @@ const complaintTypeSchema = new Schema(
     },
     relatedKits: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "MedicalKit",
       },
     ],
     relatedItems: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "Item",
       },
     ],
@@ -24,4 +24,5 @@ const complaintTypeSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("ComplaintType", complaintTypeSchema);
+const ComplaintType = model("ComplaintType", complaintTypeSchema);
+export default ComplaintType;

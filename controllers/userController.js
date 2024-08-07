@@ -1,9 +1,11 @@
-const { validationResult } = require("express-validator");
-const bcryptjs = require("bcryptjs");
+import validationResult from "express-validator";
+import bcryptjs from "bcryptjs";
 
-const User = require("../models/user");
+//file imports
+import User from "../models/user.js";
 
-exports.createFreshUserPassword = async (req, res, next) => {
+//user controllers
+export const createFreshUserPassword = async (req, res, next) => {
   try {
     //handle validation errors using express-validator
     const errors = validationResult(req);
@@ -42,7 +44,7 @@ exports.createFreshUserPassword = async (req, res, next) => {
   }
 };
 
-exports.updateUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
   try {
     const { _id } = req.user;
     const { name, email, userType, isDeleted } = req.body;

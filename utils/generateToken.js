@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 const generateToken = (object, type, secret, expiresIn) => {
   let plainObj;
@@ -33,4 +33,4 @@ const generateToken = (object, type, secret, expiresIn) => {
   });
 };
 
-module.exports = generateToken;
+export default generateToken;

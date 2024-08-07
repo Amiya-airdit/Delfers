@@ -1,6 +1,8 @@
-const User = require("../models/user");
-const verifyToken = require("../utils/verifyToken");
+//file imports
+import User from "../models/user.js";
+import verifyToken from "../utils/verifyToken.js";
 
+//This middleware is for fresh user set password
 const validateLink = async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -31,4 +33,4 @@ const validateLink = async (req, res, next) => {
   }
 };
 
-module.exports = validateLink;
+export default validateLink;

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//sub-compartment schema
 const subcompartmentSchema = new Schema(
   {
     level: {
@@ -13,12 +13,12 @@ const subcompartmentSchema = new Schema(
     },
     items: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "SubcompartmentItem",
       },
     ],
     medicalKit: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       ref: "MedicalKit",
       required: true,
     },
@@ -26,4 +26,5 @@ const subcompartmentSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Subcompartment", subcompartmentSchema);
+const Subcompartment = model("Subcompartment", subcompartmentSchema);
+export default Subcompartment;

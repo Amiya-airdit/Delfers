@@ -1,27 +1,36 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
 
 //file imports
-const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
-const aircraftRoutes = require("./routes/aircraftRoutes");
-const connectToMongoDB = require("./db/connectToMongoDB");
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import aircraftRoutes from "./routes/aircraftRoutes.js";
+import emergencyRoutes from "./routes/emergencyRoutes.js";
+import connectToMongoDB from "./db/connectToMongoDB.js";
 
 const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || 8080;
+const CLIENT_URL = process.env.CLIENT_URL;
 
+//middlewares
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    methods: ["GET", "POST", "PUT"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 //route middlewares
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/aircraft", aircraftRoutes);
+app.use("/emergency-request", emergencyRoutes);
 
 //global error handler
 app.use((err, req, res, next) => {

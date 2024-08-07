@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//diversion request schema
 const diversionRequestSchema = new Schema(
   {
     timestamp: {
@@ -18,23 +18,23 @@ const diversionRequestSchema = new Schema(
       maxlength: 100,
     },
     currentPositionLatitude: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionLongitude: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionAltitude: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionSpeed: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     currentPositionHeading: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     complaintType: {
@@ -66,12 +66,12 @@ const diversionRequestSchema = new Schema(
       maxlength: 50,
     },
     selectedAirport: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "Airport",
     },
     selectedFacility: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "MedicalFacility",
     },
@@ -81,7 +81,7 @@ const diversionRequestSchema = new Schema(
       maxlength: 50,
     },
     client: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "Client",
     },
@@ -89,4 +89,5 @@ const diversionRequestSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("DiversionRequest", diversionRequestSchema);
+const DiversionRequest = model("DiversionRequest", diversionRequestSchema);
+export default DiversionRequest;

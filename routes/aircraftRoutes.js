@@ -1,11 +1,15 @@
-const express = require("express");
+import express from "express";
 
-const {
+//file imports
+import {
   updateAircraft,
   getAllAircrafts,
-} = require("../controllers/aircraftController");
-const isAuth = require("../middlewares/authMiddleware");
+} from "../controllers/aircraftController.js";
 
+//middlewares
+import isAuth from "../middlewares/isAuthMiddleware.js";
+
+//create router
 const router = express.Router();
 
 //aircraft routes
@@ -13,4 +17,4 @@ router.get("/all-aircrafts", getAllAircrafts);
 
 router.put("/update", isAuth, updateAircraft);
 
-module.exports = router;
+export default router;

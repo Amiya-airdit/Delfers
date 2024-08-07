@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, model } from "mongoose";
 
+//client schema
 const clientSchema = new Schema(
   {
     name: {
@@ -32,4 +32,5 @@ const clientSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Client", clientSchema);
+const Client = model("Client", clientSchema);
+export default Client;

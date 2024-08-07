@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//airport schema
 const airportSchema = new Schema(
   {
     iata_code: {
@@ -24,11 +24,11 @@ const airportSchema = new Schema(
       maxlength: 100,
     },
     latitude: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     longitude: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     groudOperactionContact: {
@@ -40,4 +40,5 @@ const airportSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Airport", airportSchema);
+const Airport = model("Airport", airportSchema);
+export default Airport;

@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//nearest airport schema
 const nearestAirportSchema = new Schema(
   {
     airport: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "Airport",
     },
     distance: {
-      type: mongoose.SchemaTypes.Decimal128,
+      type: SchemaTypes.Decimal128,
       required: true,
     },
     estimatedArrivalTime: {
@@ -18,12 +18,12 @@ const nearestAirportSchema = new Schema(
     },
     suitableFacilities: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         ref: "MedicalFacility",
       },
     ],
     diversionRequest: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "DiversionRequest",
     },
@@ -31,4 +31,5 @@ const nearestAirportSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("NearestAirport", nearestAirportSchema);
+const NearestAirport = model("NearestAirport", nearestAirportSchema);
+export default NearestAirport;

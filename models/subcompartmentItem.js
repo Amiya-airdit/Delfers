@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, SchemaTypes, model } from "mongoose";
 
+//sub-compartment item schema
 const subcompartmentItemSchema = new Schema(
   {
     item: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "Item",
     },
@@ -13,7 +13,7 @@ const subcompartmentItemSchema = new Schema(
       required: true,
     },
     subcompartment: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: SchemaTypes.ObjectId,
       required: true,
       ref: "Subcompartment",
     },
@@ -21,4 +21,8 @@ const subcompartmentItemSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("SubcompartmentItem", subcompartmentItemSchema);
+const SubcompartmentItem = model(
+  "SubcompartmentItem",
+  subcompartmentItemSchema
+);
+export default SubcompartmentItem;

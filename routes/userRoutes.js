@@ -1,33 +1,27 @@
-const express = require("express");
-const { body } = require("express-validator");
+import express from "express";
 
-const {
+//file imports
+import {
   updateUser,
   createFreshUserPassword,
-} = require("../controllers/userController");
-const isAuth = require("../middlewares/authMiddleware");
-const validateLink = require("../middlewares/validateLinkMiddleware");
+} from "../controllers/userController.js";
+import { validateCreateFreshUserPassword } from "../validators/userValidations.js";
 
+//middlewares
+import isAuth from "../middlewares/isAuthMiddleware.js";
+import validateLink from "../middlewares/validateLinkMiddleware.js";
+
+//create router
 const router = express.Router();
 
 //user routes
 router.put(
   "/create-freshPassword/:userId",
   validateLink,
-  [
-    body("newPassword", "Password must not be empty").trim().notEmpty(),
-    body("confirmNewPassword")
-      .trim()
-      .custom((value, { req }) => {
-        if (value !== req.body.newPassword) {
-          throw new Error("New passwords must match.");
-        }
-        return true;
-      }),
-  ],
+  validateCreateFreshUserPassword,
   createFreshUserPassword
 );
 
 router.put("/update", isAuth, updateUser);
 
-module.exports = router;
+export default router;
