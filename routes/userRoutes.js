@@ -2,10 +2,14 @@ import express from "express";
 
 //file imports
 import {
-  updateUser,
   createFreshUserPassword,
+  updateUser,
+  deleteUser,
 } from "../controllers/userController.js";
-import { validateCreateFreshUserPassword } from "../validators/userValidations.js";
+import {
+  validateCreateFreshUserPassword,
+  validateDeleteUser,
+} from "../validators/userValidations.js";
 
 //middlewares
 import isAuth from "../middlewares/isAuthMiddleware.js";
@@ -23,5 +27,7 @@ router.put(
 );
 
 router.put("/update", isAuth, updateUser);
+
+router.delete("/delete", validateDeleteUser, deleteUser);
 
 export default router;

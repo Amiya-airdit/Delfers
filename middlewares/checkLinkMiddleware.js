@@ -8,6 +8,12 @@ const checkLink = async (req, res, next) => {
     const { userId } = req.params;
     const token = req.headers.authorization;
 
+    if (!token) {
+      const error = new Error("Authentication token not provided");
+      error.statusCode = 401;
+      throw error;
+    }
+
     //find user in db
     const user = await User.findById(userId);
     if (!user) {
@@ -18,7 +24,6 @@ const checkLink = async (req, res, next) => {
 
     //verifying token
     const secret = process.env.USER_FORGOTPASSWORD_SECRET + user.password;
-    console.log(secret);
     const decoded = verifyToken(token, secret);
     if (!decoded) {
       const error = new Error(

@@ -12,3 +12,7 @@ export const validateCreateFreshUserPassword = [
       return true;
     }),
 ];
+
+export const validateDeleteUser = [
+  body("email", "Please enter valid email").isEmail(),
+];

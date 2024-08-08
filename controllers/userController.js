@@ -1,4 +1,4 @@
-import validationResult from "express-validator";
+import { validationResult } from "express-validator";
 import bcryptjs from "bcryptjs";
 
 //file imports
@@ -17,6 +17,9 @@ export const createFreshUserPassword = async (req, res, next) => {
 
     const { _id, fresh } = req.user;
     const { newPassword } = req.body;
+    const trimmedData = {
+      newPassword: newPassword.trim(),
+    };
 
     if (!fresh) {
       const error = new Error("One-time password setup has already been used");
@@ -26,7 +29,7 @@ export const createFreshUserPassword = async (req, res, next) => {
 
     //hash password
     const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(newPassword.trim(), salt);
+    const hashedPassword = await bcryptjs.hash(trimmedData.newPassword, salt);
 
     const user = await User.findOneAndUpdate(
       { _id },
@@ -38,7 +41,7 @@ export const createFreshUserPassword = async (req, res, next) => {
 
     await res
       .status(200)
-      .json({ message: "Your new password has created!", user });
+      .json({ user, message: "Your new password has created!" });
   } catch (err) {
     next(err);
   }
@@ -83,6 +86,35 @@ export const updateUser = async (req, res, next) => {
     await res
       .status(200)
       .json({ user, message: "User details updated successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    //handle validation errors using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const { email } = req.body;
+    const trimmedData = {
+      email: email.toLowerCase(),
+    };
+
+    const user = await User.findOneAndDelete({ email: trimmedData.email });
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    await res.status(200).json({ message: "User deleted successfully!" });
   } catch (err) {
     next(err);
   }

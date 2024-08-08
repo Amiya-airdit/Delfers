@@ -8,6 +8,12 @@ const validateLink = async (req, res, next) => {
     const { userId } = req.params;
     const token = req.headers.authorization;
 
+    if (!token) {
+      const error = new Error("Authentication token not provided");
+      error.statusCode = 401;
+      throw error;
+    }
+
     //find user in db
     const user = await User.findById(userId);
     if (!user) {
@@ -21,7 +27,7 @@ const validateLink = async (req, res, next) => {
     const decoded = verifyToken(token, secret);
     if (!decoded) {
       const error = new Error(
-        "Your one time link is exprired, please contact admin"
+        "Your one time link is expired, please contact admin"
       );
       error.statusCode = 401;
       throw error;

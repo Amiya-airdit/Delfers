@@ -13,7 +13,7 @@ import isAuth from "../middlewares/isAuthMiddleware.js";
 const router = express.Router();
 
 //aircraft routes
-router.get("/all-aircrafts", getAllAircrafts);
+router.get("/all", getAllAircrafts);
 
 router.put("/update", isAuth, updateAircraft);
 

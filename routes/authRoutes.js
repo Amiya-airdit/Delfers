@@ -31,7 +31,7 @@ router.post("/login", validateLogin, login);
 
 router.post("/forgot-password", validateForgotPassword, forgotPassword);
 
-router.post(
+router.put(
   "/reset-password/:userId",
   checkLink,
   validateResetPassword,

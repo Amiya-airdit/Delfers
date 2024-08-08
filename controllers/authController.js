@@ -60,15 +60,16 @@ export const signup = async (req, res, next) => {
 
     const newSecret = process.env.USER_LOGIN_SECRET + newUser.password;
     const oneTimeToken = generateToken(newUser, "user", newSecret, "30d");
+    const link = `${process.env.CLIENT_URL}/Home/CreatePassword/${newUser._id}/${oneTimeToken}`;
 
     //send email and response
     const result = await transporter.sendMail({
       from: '"MDOB" <admin@mdob.com>',
       to: newUser.email,
       subject: "Greetings",
-      html: `<h4>Hi ${newUser.name},</h4>
+      html: `<h4>Hi, <i>${newUser.name}</i></h4>
               <p>Welcome to the MDOB.</p>
-              <p>Click this <a href='${process.env.CLIENT_URL}/create-password/${newUser._id}/${oneTimeToken}'>link</a> to create your new password</a>
+              <p>Click this <a href='${link}'>link</a> to create your new password</a>
               <p><b>Note : </b>This link is one time use only</p>`,
     });
 
@@ -173,14 +174,14 @@ export const forgotPassword = async (req, res, next) => {
     //create one time link and valid for 5mins
     const secret = process.env.USER_FORGOTPASSWORD_SECRET + user.password;
     const token = generateToken(user, "user", secret, "5m");
-    const link = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
+    const link = `${process.env.CLIENT_URL}/Home/ResetPassword/${user._id}/${token}`;
 
     //send link to email
     const result = await transporter.sendMail({
       from: '"MDOB" <admin@mdob.com>',
       to: user.email,
       subject: "Password reset link",
-      html: `<h4>Hi ${user.name},</h4>
+      html: `<h4>Hi, <i>${user.name}</i></h4>
                   <p>Click this <a href=${link}>link</a> to reset your password.</p>
                   <p>Note: The link will expire in 5 minutes and one time use only.</p>`,
     });
@@ -194,7 +195,7 @@ export const forgotPassword = async (req, res, next) => {
     await res.status(200).json({
       token,
       link,
-      message: "Password reset link sent to Email sent successfully",
+      message: "Password reset link sent to your email successfully",
     });
   } catch (err) {
     next(err);
@@ -231,7 +232,7 @@ export const resetPassword = async (req, res, next) => {
         from: '"MDOB" <admin@mdob.com>',
         to: user.email,
         subject: "Password changed",
-        html: `<h4>Hi ${user.name},</h4>
+        html: `<h4>Hi, <i>${user.name}</i></h4>
                   <p>Your password has been reset successfully.</p>`,
       },
       (error, response) => {
